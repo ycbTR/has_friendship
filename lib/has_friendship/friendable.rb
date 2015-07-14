@@ -69,8 +69,8 @@ module HasFriendship
         end
       end
       
-     def can_friend_with?(profile)
-        self != profile && HasFriendship::Friendship.find_friendship(self, friend).blank?
+     def can_friend_with?(friend)
+        self != friend && HasFriendship::Friendship.find_friendship(self, friend).blank?
      end
 
 
