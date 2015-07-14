@@ -70,7 +70,9 @@ module HasFriendship
       end
       
      def can_friend_with?(friend)
-        self != friend && HasFriendship::Friendship.find_friendship(self, friend).blank?
+        self != friend && 
+        HasFriendship::Friendship.find_friendship(self, friend).blank? && 
+        HasFriendship::Friendship.find_friendship(friend, self).blank?
      end
 
 
