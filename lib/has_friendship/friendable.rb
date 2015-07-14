@@ -6,22 +6,23 @@ module HasFriendship
     end
 
     def has_friendship
-      
+
       class_eval do
         has_many :friendships, as: :friendable, class_name: "HasFriendship::Friendship", dependent: :destroy
-        has_many :friends, 
-                  -> { where friendships: { status: 'accepted' } },
-                  through: :friendships
+
+        has_many :friends,
+                 -> { where friendships: {status: 'accepted'} },
+                 through: :friendships
 
         has_many :requested_friends,
-                  -> { where friendships: { status: 'requested' } },
-                  through: :friendships,
-                  source: :friend
+                 -> { where friendships: {status: 'requested'} },
+                 through: :friendships,
+                 source: :friend
 
         has_many :pending_friends,
-                  -> { where friendships: { status: 'pending' } },
-                  through: :friendships,
-                  source: :friend
+                 -> { where friendships: {status: 'pending'} },
+                 through: :friendships,
+                 source: :friend
 
         def self.friendable?
           true
@@ -68,13 +69,23 @@ module HasFriendship
           HasFriendship::Friendship.find_friendship(self, friend).destroy
         end
       end
-      
-     def can_friend_with?(friend)
-        self != friend && 
-        HasFriendship::Friendship.find_friendship(self, friend).blank? && 
-        HasFriendship::Friendship.find_friendship(friend, self).blank?
-     end
 
+      def can_friend_with?(friend)
+        self != friend && !HasFriendship::Friendship.exist?(self, friend)
+      end
+
+
+      def am_i_requester?(friend)
+        HasFriendship::Friendship.find_friendship(friend, self).status == 'requested'
+      end
+
+      def can_i_accept?(friend)
+        !am_i_requester?(friend)
+      end
+
+      def can_i_decline?(friend)
+        !am_i_requester?(friend)
+      end
 
     end
   end
