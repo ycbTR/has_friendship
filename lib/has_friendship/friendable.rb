@@ -70,7 +70,7 @@ module HasFriendship
       end
       
      def can_friend_with?(profile)
-        self != profile && !self.friend_ids.include?(profile.id)
+        self != profile && HasFriendship::Friendship.find_friendship(self, friend).blank?
      end
 
 
