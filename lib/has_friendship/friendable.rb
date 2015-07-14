@@ -68,6 +68,11 @@ module HasFriendship
           HasFriendship::Friendship.find_friendship(self, friend).destroy
         end
       end
+      
+     def can_friend_with?(profile)
+        self != profile && !self.friend_ids.include?(profile.id)
+     end
+
 
     end
   end
